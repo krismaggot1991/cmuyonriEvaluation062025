@@ -16,8 +16,9 @@ Feature: Test de API súper simple
     Then status 200
 
 
-  @id:3 @MUL-TEST-CA03-post--delete-and-not-found-character
-  Scenario: Verify post character, delete enpoint, and verify deletion
+  @id:3 @MUL-TEST-CA03-post-update-delete-and-not-found-character
+  Scenario: Verify post character, update, delete, and verify deletion
+    * def jsonreq = read('classpath:../data/request_UpdateCharacter.json')
     * def rand = Math.floor(Math.random() * 100000)
     * def name = 'Chris Muyon ' + rand
     * def character =
@@ -35,6 +36,12 @@ Feature: Test de API súper simple
     Then status 201
     * def createdId = response.id
     * print 'ID creado:', createdId
+
+    # Verificar que el personaje creado es actualizado
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/' + createdId
+    And request jsonreq
+    When method put
+    Then status 200
 
     # Verificar que el personaje creado es eliminado
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/' + createdId
