@@ -67,7 +67,7 @@ Feature: Test de API súper simple
     Then status 404
     And match response.error == 'Character not found'
 
-  @id:8 @MUL-TEST-CA08-post-character-duplicate-name
+  @id:6 @MUL-TEST-CA08-post-character-duplicate-name
   Scenario: Verificar que falla al crear personaje con nombre duplicado
     * def jsonreq = read('classpath:../data/request_PostCharacterDuplicy.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
@@ -75,3 +75,13 @@ Feature: Test de API súper simple
     When method post
     Then status 400
     And match response.error == 'Character name already exists'
+
+
+  @id:7 @MUL-TEST-CA09-post-character-missing-all-fields
+  Scenario: Verificar error cuando se envían todos los campos vacíos
+    * def jsonreq = read('classpath:../data/request_PostCharacterVoid.json')
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
+    And request jsonreq
+    When method post
+    Then status 400
+    And match response contains { name: 'Name is required', alterego: 'Alterego is required', description: 'Description is required', powers: 'Powers are required' }
