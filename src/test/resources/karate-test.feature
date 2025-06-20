@@ -52,3 +52,18 @@ Feature: Test de API súper simple
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/' + createdId
     When method get
     Then status 404
+
+  @id:5 @MUL-TEST-CA05-post-character-missing-name
+  Scenario: Verificar que la creación falla si falta el campo name
+    * def character =
+      """
+      {
+        "alterego": "Sin Nombre",
+        "description": "Falta el campo name",
+        "powers": ["Unknown"]
+      }
+      """
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
+    And request character
+    When method post
+    Then status 400
