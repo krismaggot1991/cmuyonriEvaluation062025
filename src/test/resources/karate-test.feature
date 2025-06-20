@@ -52,7 +52,7 @@ Feature: Test de API súper simple
     When method get
     Then status 404
 
-  @id:4 @MUL-TEST-CA05-post-character-missing-name
+  @id:4 @MUL-TEST-CA04-post-character-missing-name
   Scenario: Verificar que la creación falla si falta el campo name
     * def jsonreq = read('classpath:../data/request_PostCharacterWithoutName.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
@@ -60,14 +60,14 @@ Feature: Test de API súper simple
     When method post
     Then status 400
 
-  @id:5 @MUL-TEST-CA07-get-character-by-id-not-found
+  @id:5 @MUL-TEST-CA05-get-character-by-id-not-found
   Scenario: Verificar obtención de personaje por ID inexistente
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
     When method get
     Then status 404
     And match response.error == 'Character not found'
 
-  @id:6 @MUL-TEST-CA08-post-character-duplicate-name
+  @id:6 @MUL-TEST-CA06-post-character-duplicate-name
   Scenario: Verificar que falla al crear personaje con nombre duplicado
     * def jsonreq = read('classpath:../data/request_PostCharacterDuplicy.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
@@ -76,7 +76,7 @@ Feature: Test de API súper simple
     Then status 400
     And match response.error == 'Character name already exists'
 
-  @id:7 @MUL-TEST-CA09-post-character-missing-all-fields
+  @id:7 @MUL-TEST-CA07-post-character-missing-all-fields
   Scenario: Verificar error cuando se envían todos los campos vacíos
     * def jsonreq = read('classpath:../data/request_PostCharacterVoid.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
@@ -85,11 +85,18 @@ Feature: Test de API súper simple
     Then status 400
     And match response contains { name: 'Name is required', alterego: 'Alterego is required', description: 'Description is required', powers: 'Powers are required' }
 
-  @id:8 @MUL-TEST-CA10-put-character-not-found
+  @id:8 @MUL-TEST-CA08-put-character-not-found
   Scenario: Verificar que falla al actualizar un personaje que no existe
     * def jsonreq = read('classpath:../data/request_UpdateCharacter.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
     And request jsonreq
     When method put
+    Then status 404
+    And match response.error == 'Character not found'
+
+  @id:9 @MUL-TEST-CA09-delete-character-not-found
+  Scenario: Verificar que falla al eliminar un personaje que no existe
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
+    When method delete
     Then status 404
     And match response.error == 'Character not found'
