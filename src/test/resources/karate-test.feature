@@ -15,7 +15,6 @@ Feature: Test de API súper simple
     When method get
     Then status 200
 
-
   @id:3 @MUL-TEST-CA03-post-update-delete-and-not-found-character
   Scenario: Verify post character, update, delete, and verify deletion
     * def jsonreq = read('classpath:../data/request_UpdateCharacter.json')
@@ -67,3 +66,10 @@ Feature: Test de API súper simple
     And request character
     When method post
     Then status 400
+
+  @id:6 @MUL-TEST-CA07-get-character-by-id-not-found
+  Scenario: Verificar obtención de personaje por ID inexistente
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
+    When method get
+    Then status 404
+    And match response.error == 'Character not found'
