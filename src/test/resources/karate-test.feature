@@ -100,3 +100,10 @@ Feature: Test de API súper simple
     When method delete
     Then status 404
     And match response.error == 'Character not found'
+
+  @id:10 @MUL-TEST-CA10-validate-get-characters-structure
+  Scenario: Validar estructura de objetos en la respuesta de GET all
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
+    When method get
+    Then status 200
+    And match each response contains { id: '#number', name: '#string', alterego: '#string', description: '#string', powers: '#[]' }
