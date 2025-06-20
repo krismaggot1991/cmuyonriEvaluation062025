@@ -76,7 +76,6 @@ Feature: Test de API súper simple
     Then status 400
     And match response.error == 'Character name already exists'
 
-
   @id:7 @MUL-TEST-CA09-post-character-missing-all-fields
   Scenario: Verificar error cuando se envían todos los campos vacíos
     * def jsonreq = read('classpath:../data/request_PostCharacterVoid.json')
@@ -85,3 +84,12 @@ Feature: Test de API súper simple
     When method post
     Then status 400
     And match response contains { name: 'Name is required', alterego: 'Alterego is required', description: 'Description is required', powers: 'Powers are required' }
+
+  @id:8 @MUL-TEST-CA10-put-character-not-found
+  Scenario: Verificar que falla al actualizar un personaje que no existe
+    * def jsonreq = read('classpath:../data/request_UpdateCharacter.json')
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
+    And request jsonreq
+    When method put
+    Then status 404
+    And match response.error == 'Character not found'
