@@ -16,8 +16,8 @@ Feature: Test de API súper simple
     Then status 200
 
 
-  @id:3 @MUL-TEST-CA03-post-character
-  Scenario: Verify post character endpoint responds 200 OK
+  @id:3 @MUL-TEST-CA03-post--delete-and-not-found-character
+  Scenario: Verify post character, delete enpoint, and verify deletion
     * def rand = Math.floor(Math.random() * 100000)
     * def name = 'Chris Muyon ' + rand
     * def character =
@@ -33,3 +33,15 @@ Feature: Test de API súper simple
     And request character
     When method post
     Then status 201
+    * def createdId = response.id
+    * print 'ID creado:', createdId
+
+    # Verificar que el personaje creado es eliminado
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/' + createdId
+    When method delete
+    Then status 204
+
+    # Verificar que ya no existe
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/' + createdId
+    When method get
+    Then status 404
