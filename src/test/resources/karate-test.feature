@@ -52,24 +52,26 @@ Feature: Test de API súper simple
     When method get
     Then status 404
 
-  @id:5 @MUL-TEST-CA05-post-character-missing-name
+  @id:4 @MUL-TEST-CA05-post-character-missing-name
   Scenario: Verificar que la creación falla si falta el campo name
-    * def character =
-      """
-      {
-        "alterego": "Sin Nombre",
-        "description": "Falta el campo name",
-        "powers": ["Unknown"]
-      }
-      """
+    * def jsonreq = read('classpath:../data/request_PostCharacterWithoutName.json')
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
-    And request character
+    And request jsonreq
     When method post
     Then status 400
 
-  @id:6 @MUL-TEST-CA07-get-character-by-id-not-found
+  @id:5 @MUL-TEST-CA07-get-character-by-id-not-found
   Scenario: Verificar obtención de personaje por ID inexistente
     Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters/999999999'
     When method get
     Then status 404
     And match response.error == 'Character not found'
+
+  @id:8 @MUL-TEST-CA08-post-character-duplicate-name
+  Scenario: Verificar que falla al crear personaje con nombre duplicado
+    * def jsonreq = read('classpath:../data/request_PostCharacterDuplicy.json')
+    Given url 'http://bp-se-test-cabcd9b246a5.herokuapp.com/testuser/api/characters'
+    And request jsonreq
+    When method post
+    Then status 400
+    And match response.error == 'Character name already exists'
